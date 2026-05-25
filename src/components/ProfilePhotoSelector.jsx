@@ -1,4 +1,3 @@
-import { User } from "lucide-react";
 import { useRef, useState } from "react";
 import { FaUser } from "react-icons/fa";
 import { FiUpload, FiTrash2 } from "react-icons/fi";

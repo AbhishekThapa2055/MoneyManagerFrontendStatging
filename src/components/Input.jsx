@@ -1,4 +1,3 @@
-import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 const Input = ({ label, value, onChange, placeholder, type }) => {

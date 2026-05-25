@@ -1,4 +1,3 @@
-import { LayoutDashboard } from "lucide-react";
 import login_bg from "./login-bg.png";
 import logo from "./logo.png";
 import { FaGauge, FaList } from "react-icons/fa6";

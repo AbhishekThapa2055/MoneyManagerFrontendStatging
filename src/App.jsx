@@ -43,7 +43,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 const App = () => {
   return (
     <>
-      <ToastContainer />
+      <ToastContainer autoClose={2000} />
 
       <Routes>
         {/* Public routes */}

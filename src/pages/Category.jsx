@@ -15,6 +15,7 @@ const Category = () => {
   const [openEditCategoryModal, setOpenEditCategoryModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const { user } = useContext(AppContext);
+
   const fetchCategoryDetails = async () => {
     if (loading) return;
     setLoading(true);
@@ -38,6 +39,36 @@ const Category = () => {
   useEffect(() => {
     fetchCategoryDetails();
   }, []);
+
+  const handleAddCategory = async (category) => {
+    const { name, type, icon } = category;
+    if (!name.trim()) {
+      toast.error("Category name is required");
+      return;
+    }
+    try {
+      setLoading(true);
+      const response = await axiosConfig.post(API_ENDPOINTS.ADD_CATEGORY, {
+        name,
+        type,
+        icon,
+      });
+      console.log(response.status);
+
+      if (response.status === 201) {
+        toast.success("Category added successfully");
+        setOpenAddCategoryModal(false);
+        fetchCategoryDetails();
+      }
+    } catch (error) {
+      console.error("Error adding category", error);
+      toast.error(error.response?.data?.message || "Failed to add category");
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Dashboard activeMenu="Category">
       <div className="my-5 mx-auto">
@@ -64,7 +95,11 @@ const Category = () => {
           title="Add Category"
           onClose={() => setOpenAddCategoryModal(false)}
         >
-          <AddCategoryForm />
+          <AddCategoryForm
+            onAddCategory={handleAddCategory}
+            loading={loading}
+            setLoading={setLoading}
+          />
         </Modal>
         {/* Update category modal */}
       </div>

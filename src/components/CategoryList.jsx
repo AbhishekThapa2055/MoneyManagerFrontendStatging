@@ -1,6 +1,7 @@
 import { FaPencilAlt } from "react-icons/fa";
 import { MdCategory } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
+import { FaSpinner } from "react-icons/fa";
 const CategoryList = ({
   categories,
   onEditCategory,
@@ -12,8 +13,14 @@ const CategoryList = ({
       <div className="flex items-center justify-between mb-4">
         <h4 className="text-lg font-semibold">Category Sources </h4>
       </div>
+      {loading && (
+        <div className="flex justify-center">
+          <FaSpinner className="text-5xl text-gray-600 animate-spin" />
+        </div>
+      )}
+
       {/* category list */}
-      {categories.length === 0 && loading ? (
+      {categories.length === 0 && !loading ? (
         <p className="text-gray-500">No categories added yet...</p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-col-3 gap-4">

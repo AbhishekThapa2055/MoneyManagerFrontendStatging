@@ -2,8 +2,8 @@ import { useState } from "react";
 import Input from "./Input";
 import SelectInput from "./SelectInput";
 import EmojiPickerPopup from "./EmojiPickerPopup";
-
-const AddCategoryForm = () => {
+import { FaSpinner } from "react-icons/fa";
+const AddCategoryForm = ({ onAddCategory, loading, setLoading }) => {
   const [category, setCategory] = useState({
     name: "",
     type: "",
@@ -16,6 +16,10 @@ const AddCategoryForm = () => {
   ];
   const handleChange = (key, value) => {
     setCategory({ ...category, [key]: value });
+  };
+
+  const handleSubmit = () => {
+    onAddCategory(category);
   };
   return (
     <div className="p-4">
@@ -37,6 +41,18 @@ const AddCategoryForm = () => {
         options={categoryTypeOptions}
         label="Category Type"
       />
+      <div className="mt-5 flex justify-center w-full">
+        <button
+          type="button"
+          onClick={handleSubmit}
+          className="bg-green-600 text-white shadow-2xl p-2 border rounded-lg w-[400px]"
+        >
+          Submit
+        </button>
+        {loading && (
+          <FaSpinner className="text-4xl text-gray-600 animate-spin" />
+        )}
+      </div>
     </div>
   );
 };

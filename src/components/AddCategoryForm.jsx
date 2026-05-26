@@ -1,14 +1,31 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Input from "./Input";
 import SelectInput from "./SelectInput";
 import EmojiPickerPopup from "./EmojiPickerPopup";
 import { FaSpinner } from "react-icons/fa";
-const AddCategoryForm = ({ onAddCategory, loading, setLoading }) => {
+const AddCategoryForm = ({
+  onAddCategory,
+  loading,
+  categorydata,
+  isEditMode,
+  onUpdateCategory,
+}) => {
   const [category, setCategory] = useState({
+    id: "",
     name: "",
     type: "",
     icon: "",
   });
+  useEffect(() => {
+    if (categorydata) {
+      setCategory({
+        id: categorydata.id || "",
+        name: categorydata.name || "",
+        type: categorydata.type || "",
+        icon: categorydata.icon || "",
+      });
+    }
+  }, [categorydata]);
 
   const categoryTypeOptions = [
     { value: "income", label: "Income" },
@@ -20,6 +37,9 @@ const AddCategoryForm = ({ onAddCategory, loading, setLoading }) => {
 
   const handleSubmit = () => {
     onAddCategory(category);
+  };
+  const handleEditSubmit = () => {
+    onUpdateCategory(category);
   };
   return (
     <div className="p-4">
@@ -42,13 +62,26 @@ const AddCategoryForm = ({ onAddCategory, loading, setLoading }) => {
         label="Category Type"
       />
       <div className="mt-5 flex justify-center w-full">
-        <button
-          type="button"
-          onClick={handleSubmit}
-          className="bg-green-600 text-white shadow-2xl p-2 border rounded-lg w-[400px]"
-        >
-          Submit
-        </button>
+        {!isEditMode && (
+          <button
+            type="button"
+            onClick={handleSubmit}
+            className="bg-green-600 text-white shadow-2xl p-2 border rounded-lg w-[400px]"
+          >
+            Submit
+          </button>
+        )}
+
+        {isEditMode && (
+          <button
+            type="button"
+            onClick={handleEditSubmit}
+            className="bg-green-600 text-white shadow-2xl p-2 border rounded-lg w-[400px]"
+          >
+            Update
+          </button>
+        )}
+
         {loading && (
           <FaSpinner className="text-4xl text-gray-600 animate-spin" />
         )}

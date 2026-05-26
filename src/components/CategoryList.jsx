@@ -2,12 +2,7 @@ import { FaPencilAlt } from "react-icons/fa";
 import { MdCategory } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
 import { FaSpinner } from "react-icons/fa";
-const CategoryList = ({
-  categories,
-  onEditCategory,
-  onDeleteCategory,
-  loading,
-}) => {
+const CategoryList = ({ categories, onEditCategory, loading }) => {
   return (
     <div className="card p-4">
       <div className="flex items-center justify-between mb-4">
@@ -57,7 +52,10 @@ const CategoryList = ({
                 </div>
                 {/* Action buttons   */}
                 <div className="flex items-center gap-2">
-                  <button className="text-gray-400 hover:text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                  <button
+                    onClick={() => onEditCategory(category)}
+                    className="text-gray-400 hover:text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                  >
                     <FaEdit size={18} />
                   </button>
                 </div>

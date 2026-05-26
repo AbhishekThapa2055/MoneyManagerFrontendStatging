@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, use } from "react";
 import CategoryList from "../components/CategoryList";
 import Dashboard from "../components/dashboard";
 import { FaPlus } from "react-icons/fa";
@@ -14,6 +14,7 @@ const Category = () => {
   const [openAddCategoryModal, setOpenAddCategoryModal] = useState(false);
   const [openEditCategoryModal, setOpenEditCategoryModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [title, setTitle] = useState("Add Category");
   const { user } = useContext(AppContext);
 
   const fetchCategoryDetails = async () => {
@@ -69,6 +70,45 @@ const Category = () => {
     }
   };
 
+  const handleUpdateCategory = async (category) => {
+    const { id, name, type, icon } = category;
+    if (!name.trim()) {
+      toast.error("Category name is required");
+      return;
+    }
+    try {
+      setLoading(true);
+      const response = await axiosConfig.put(
+        API_ENDPOINTS.UPDATE_CATEGORY(id),
+        {
+          name,
+          type,
+          icon,
+        },
+      );
+      console.log(response.status);
+
+      if (response.status === 200) {
+        toast.success("Category Updated successfully");
+        setOpenEditCategoryModal(false);
+        fetchCategoryDetails();
+      }
+    } catch (error) {
+      console.error("Error updating category", error);
+      toast.error(error.response?.data?.message || "Failed to update category");
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEditCategory = (category) => {
+    console.log("Editing the category", category);
+    setTitle("Edit Category");
+    setOpenEditCategoryModal(true);
+    setSelectedCategory(category);
+  };
+
   return (
     <Dashboard activeMenu="Category">
       <div className="my-5 mx-auto">
@@ -88,7 +128,11 @@ const Category = () => {
         </div>
         {/* category list (reusable) */}
 
-        <CategoryList categories={categoryData} loading={loading} />
+        <CategoryList
+          categories={categoryData}
+          loading={loading}
+          onEditCategory={handleEditCategory}
+        />
         {/* Adding category modal */}
         <Modal
           isOpen={openAddCategoryModal}
@@ -98,10 +142,21 @@ const Category = () => {
           <AddCategoryForm
             onAddCategory={handleAddCategory}
             loading={loading}
-            setLoading={setLoading}
           />
         </Modal>
         {/* Update category modal */}
+        <Modal
+          isOpen={openEditCategoryModal}
+          title="Edit Category"
+          onClose={() => setOpenEditCategoryModal(false)}
+        >
+          <AddCategoryForm
+            onUpdateCategory={handleUpdateCategory}
+            loading={loading}
+            categorydata={selectedCategory}
+            isEditMode={openEditCategoryModal}
+          />
+        </Modal>
       </div>
     </Dashboard>
   );

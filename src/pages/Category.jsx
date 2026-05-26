@@ -3,11 +3,12 @@ import CategoryList from "../components/CategoryList";
 import Dashboard from "../components/dashboard";
 import { FaPlus } from "react-icons/fa";
 import axiosConfig from "../util/axiosConfig";
-import { API_ENDPOINTS } from "../util/apiEndpoints";
+import { API_ENDPOINTS, BASE_URL } from "../util/apiEndpoints";
 import { toast } from "react-toastify";
 import { AppContext } from "../context/AppContext";
 import Modal from "../components/modal";
 import AddCategoryForm from "../components/AddCategoryForm";
+import { FiDownload } from "react-icons/fi";
 const Category = () => {
   const [loading, setLoading] = useState(false);
   const [categoryData, setcategoryData] = useState([]);
@@ -109,12 +110,48 @@ const Category = () => {
     setSelectedCategory(category);
   };
 
+  const downloadCategories = async () => {
+    try {
+      const response = await axiosConfig.get(API_ENDPOINTS.EXPORT_CATEGORIES, {
+        responseType: "blob", // IMPORTANT
+      });
+
+      console.log(response.data);
+      // Create file blob
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+
+      // Create link element
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.setAttribute("download", "categories.xlsx");
+
+      document.body.appendChild(link);
+      link.click();
+
+      // cleanup
+      link.remove();
+      window.URL.revokeObjectURL(url);
+
+      toast.success("Successfully downloaded!");
+    } catch (error) {
+      console.error(error);
+      toast.error("Download failed");
+    }
+  };
+
   return (
     <Dashboard activeMenu="Category">
       <div className="my-5 mx-auto">
         {/* add button to add category */}
         <div className="flex justify-between items-center">
           <h2 className="text-2xl"> All Categories </h2>
+          <div className="flex  justify-end gap-40">
+            <button onClick={downloadCategories}>
+              <FiDownload size={20} />
+            </button>
+          </div>
+
           <button
             onClick={() => {
               setOpenAddCategoryModal(true);
